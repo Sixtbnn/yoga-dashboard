@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yoga Dashboard — 6 Mois</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#FAF7F4;--bg2:#FFFFFF;--bg3:#F3EEE9;--border:#E8DDD4;
+  --sand:#5C4E42;--muted:#A8998C;--gold:#C4875A;--gold2:#D4956A;
+  --terracotta:#D4856A;--sage:#7FA882;--white:#FFFFFF;
+  --p1:#C4875A;--p2:#D4856A;--p3:#7FA882;
+}
+body{background:var(--bg);color:var(--sand);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;font-size:14px;}
+header{padding:36px 40px 28px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;background:var(--white);}
+.eyebrow{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,4vw,38px);font-weight:300;color:#3C3028;line-height:1.1;}
+header h1 em{font-style:italic;color:var(--gold);}
+.total-pill{background:var(--bg3);border:1px solid var(--border);border-radius:40px;padding:10px 20px;text-align:center;}
+.total-pill .tval{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);line-height:1;}
+.total-pill .tlabel{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+main{padding:28px 40px 64px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;}
+.card.wide{grid-column:span 3;}
+.card.half{grid-column:span 2;}
+.clabel{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.ctitle{font-family:'Cormorant Garamond',serif;font-size:17px;color:#3C3028;font-weight:400;margin-bottom:16px;}
+.kpi-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.kpi{flex:1;min-width:110px;background:var(--bg3);border-radius:8px;padding:14px 16px;}
+.kpi .kv{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#3C3028;line-height:1;}
+.kpi .kl{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+.kpi .ks{font-size:11px;color:var(--muted);margin-top:2px;}
+.rings-row{display:flex;justify-content:space-around;align-items:center;gap:12px;flex-wrap:wrap;}
+.ring-item{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.ring-wrap{position:relative;width:110px;height:110px;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.ring-pct{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;line-height:1;}
+.ring-done{font-size:10px;color:var(--muted);margin-top:2px;}
+.ring-name{font-size:12px;font-weight:500;text-align:center;}
+.ring-hours{font-size:11px;color:var(--muted);}
+.bar-list{display:flex;flex-direction:column;gap:11px;}
+.bar-row{display:flex;flex-direction:column;gap:4px;}
+.bar-meta{display:flex;justify-content:space-between;}
+.bar-label{font-size:12px;color:var(--sand);}
+.bar-val{font-size:11px;color:var(--muted);}
+.bar-track{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;transition:width 0.5s ease;}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.fbtn{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--muted);cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+.fbtn.active{border-color:var(--gold);background:#FDF0E8;color:var(--gold);}
+.session-list{display:flex;flex-direction:column;gap:4px;max-height:340px;overflow-y:auto;padding-right:4px;}
+.session-list::-webkit-scrollbar{width:4px;}
+.session-list::-webkit-scrollbar-track{background:var(--bg3);}
+.session-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.srow{display:grid;grid-template-columns:30px 1fr 22px;gap:10px;align-items:center;padding:8px 10px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:var(--bg3);transition:background 0.15s,border-color 0.15s;}
+.srow:hover{border-color:var(--gold);}
+.srow.done{background:#EFF5F0;border-color:#C8DEC9;}
+.sid{font-size:10px;color:var(--muted);}
+.sname{font-size:12px;color:var(--sand);line-height:1.4;}
+.srow.done .sname{text-decoration:line-through;opacity:0.6;color:#7FA882;}
+.smeta{font-size:10px;color:var(--muted);margin-top:2px;}
+.scheck{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--white);}
+.srow.done .scheck{border-color:#7FA882;background:#D6ECD7;}
+.reset-btn{font-size:11px;padding:5px 14px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.reset-btn:hover{border-color:#D4856A;color:#D4856A;}
+@media(max-width:700px){
+  header,main{padding-left:16px;padding-right:16px;}
+  main{grid-template-columns:1fr;}
+  .card.wide,.card.half{grid-column:span 1;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="eyebrow">Dashboard · Suivi personnel</div>
+    <h1>Yoga <em>6 mois</em></h1>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="reset-btn" onclick="resetAll()">Réinitialiser</button>
+    <div class="total-pill">
+      <div class="tval" id="totalHours">0h</div>
+      <div class="tlabel">heures réalisées</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="card wide">
+    <div class="clabel">Vue globale</div>
+    <div class="kpi-row" id="kpiRow"></div>
+  </div>
+
+  <div class="card wide">
+    <div class="clabel">Complétion par phase</div>
+    <div class="ctitle">Progression des 3 phases</div>
+    <div class="rings-row" id="ringsRow"></div>
+  </div>
+
+  <div class="card half">
+    <div class="clabel">Heures réalisées</div>
+    <div class="ctitle">Par type de session</div>
+    <div class="bar-list" id="typeBars"></div>
+  </div>
+
+  <div class="card">
+    <div class="clabel">Heures réalisées</div>
+    <div class="ctitle">Par phase</div>
+    <div class="bar-list" id="phaseBars"></div>
+  </div>
+
+  <div class="card wide">
+    <div class="clabel">Sessions — clique pour cocher</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div class="ctitle" style="margin-bottom:0;">Liste des 147 sessions</div>
+    </div>
+    <div class="filters">
+      <button class="fbtn active" id="f-all" onclick="setFilter('all')">Toutes</button>
+      <button class="fbtn" id="f-p1" onclick="setFilter('p1')">🌱 Phase 1</button>
+      <button class="fbtn" id="f-p2" onclick="setFilter('p2')">🔥 Phase 2</button>
+      <button class="fbtn" id="f-p3" onclick="setFilter('p3')">🌿 Phase 3</button>
+      <button class="fbtn" id="f-Pratique" onclick="setFilter('Pratique')">Pratique</button>
+      <button class="fbtn" id="f-Pranayama" onclick="setFilter('Pranayama')">Pranayama</button>
+      <button class="fbtn" id="f-Philosophie" onclick="setFilter('Philosophie')">Philosophie</button>
+      <button class="fbtn" id="f-Yin" onclick="setFilter('Yin')">Yin</button>
+      <button class="fbtn" id="f-Samedi" onclick="setFilter('Samedi')">Samedi</button>
+      <button class="fbtn" id="f-Repos" onclick="setFilter('Repos')">Repos</button>
+    </div>
+    <div class="session-list" id="sessionList"></div>
+  </div>
+
+</main>
+
+<script>
+const SESSIONS=[
+  {id:1,s:"Yoga For Beginners — Hatha fondamental",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:2,s:"Pranayama — Nadi Shodhana + Méditation",p:"🌱 Phase 1",pk:"p1",t:"Pranayama",d:60},
+  {id:3,s:"Vinyasa Flow — Surya Namaskar A & B",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:4,s:"Philosophie — 8 membres de Patanjali",p:"🌱 Phase 1",pk:"p1",t:"Philosophie",d:60},
+  {id:5,s:"Yin Yoga — Corps entier (Boho Beautiful)",p:"🌱 Phase 1",pk:"p1",t:"Yin",d:60},
+  {id:6,s:"Session longue — Pranayama + Pratique + Anatomie + Nidra",p:"🌱 Phase 1",pk:"p1",t:"Samedi",d:150},
+  {id:7,s:"Méditation + Yoga Sutras",p:"🌱 Phase 1",pk:"p1",t:"Repos",d:30},
+  {id:8,s:"Yoga For Beginners — Hatha fondamental",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:9,s:"Pranayama — Nadi Shodhana + Méditation",p:"🌱 Phase 1",pk:"p1",t:"Pranayama",d:60},
+  {id:10,s:"Vinyasa Flow — Surya Namaskar A & B",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:11,s:"Philosophie — 8 membres de Patanjali",p:"🌱 Phase 1",pk:"p1",t:"Philosophie",d:60},
+  {id:12,s:"Yin Yoga — Corps entier (Boho Beautiful)",p:"🌱 Phase 1",pk:"p1",t:"Yin",d:60},
+  {id:13,s:"Session longue — Pranayama + Pratique + Anatomie + Nidra",p:"🌱 Phase 1",pk:"p1",t:"Samedi",d:150},
+  {id:14,s:"Méditation + Yoga Sutras",p:"🌱 Phase 1",pk:"p1",t:"Repos",d:30},
+  {id:15,s:"Yoga For Beginners — Hatha fondamental",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:16,s:"Pranayama — Nadi Shodhana + Méditation",p:"🌱 Phase 1",pk:"p1",t:"Pranayama",d:60},
+  {id:17,s:"Vinyasa Flow — Surya Namaskar A & B",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:18,s:"Philosophie — 8 membres de Patanjali",p:"🌱 Phase 1",pk:"p1",t:"Philosophie",d:60},
+  {id:19,s:"Yin Yoga — Corps entier (Boho Beautiful)",p:"🌱 Phase 1",pk:"p1",t:"Yin",d:60},
+  {id:20,s:"Session longue — Pranayama + Pratique + Anatomie + Nidra",p:"🌱 Phase 1",pk:"p1",t:"Samedi",d:150},
+  {id:21,s:"Méditation + Yoga Sutras",p:"🌱 Phase 1",pk:"p1",t:"Repos",d:30},
+  {id:22,s:"Yoga For Beginners — Hatha fondamental",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:23,s:"Pranayama — Nadi Shodhana + Méditation",p:"🌱 Phase 1",pk:"p1",t:"Pranayama",d:60},
+  {id:24,s:"Vinyasa Flow — Surya Namaskar A & B",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:25,s:"Philosophie — 8 membres de Patanjali",p:"🌱 Phase 1",pk:"p1",t:"Philosophie",d:60},
+  {id:26,s:"Yin Yoga — Corps entier (Boho Beautiful)",p:"🌱 Phase 1",pk:"p1",t:"Yin",d:60},
+  {id:27,s:"Session longue — Pranayama + Pratique + Anatomie + Nidra",p:"🌱 Phase 1",pk:"p1",t:"Samedi",d:150},
+  {id:28,s:"Méditation + Yoga Sutras",p:"🌱 Phase 1",pk:"p1",t:"Repos",d:30},
+  {id:29,s:"Yoga For Beginners — Hatha fondamental",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:30,s:"Pranayama — Nadi Shodhana + Méditation",p:"🌱 Phase 1",pk:"p1",t:"Pranayama",d:60},
+  {id:31,s:"Vinyasa Flow — Surya Namaskar A & B",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:32,s:"Philosophie — 8 membres de Patanjali",p:"🌱 Phase 1",pk:"p1",t:"Philosophie",d:60},
+  {id:33,s:"Yin Yoga — Corps entier (Boho Beautiful)",p:"🌱 Phase 1",pk:"p1",t:"Yin",d:60},
+  {id:34,s:"Session longue — Pranayama + Pratique + Anatomie + Nidra",p:"🌱 Phase 1",pk:"p1",t:"Samedi",d:150},
+  {id:35,s:"Méditation + Yoga Sutras",p:"🌱 Phase 1",pk:"p1",t:"Repos",d:30},
+  {id:36,s:"Yoga For Beginners — Hatha fondamental",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:37,s:"Pranayama — Nadi Shodhana + Méditation",p:"🌱 Phase 1",pk:"p1",t:"Pranayama",d:60},
+  {id:38,s:"Vinyasa Flow — Surya Namaskar A & B",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:39,s:"Philosophie — 8 membres de Patanjali",p:"🌱 Phase 1",pk:"p1",t:"Philosophie",d:60},
+  {id:40,s:"Yin Yoga — Corps entier (Boho Beautiful)",p:"🌱 Phase 1",pk:"p1",t:"Yin",d:60},
+  {id:41,s:"Session longue — Pranayama + Pratique + Anatomie + Nidra",p:"🌱 Phase 1",pk:"p1",t:"Samedi",d:150},
+  {id:42,s:"Méditation + Yoga Sutras",p:"🌱 Phase 1",pk:"p1",t:"Repos",d:30},
+  {id:43,s:"Yoga For Beginners — Hatha fondamental",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:44,s:"Pranayama — Nadi Shodhana + Méditation",p:"🌱 Phase 1",pk:"p1",t:"Pranayama",d:60},
+  {id:45,s:"Vinyasa Flow — Surya Namaskar A & B",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:46,s:"Philosophie — 8 membres de Patanjali",p:"🌱 Phase 1",pk:"p1",t:"Philosophie",d:60},
+  {id:47,s:"Yin Yoga — Corps entier (Boho Beautiful)",p:"🌱 Phase 1",pk:"p1",t:"Yin",d:60},
+  {id:48,s:"Session longue — Pranayama + Pratique + Anatomie + Nidra",p:"🌱 Phase 1",pk:"p1",t:"Samedi",d:150},
+  {id:49,s:"Méditation + Yoga Sutras",p:"🌱 Phase 1",pk:"p1",t:"Repos",d:30},
+  {id:50,s:"Yoga For Beginners — Hatha fondamental",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:51,s:"Pranayama — Nadi Shodhana + Méditation",p:"🌱 Phase 1",pk:"p1",t:"Pranayama",d:60},
+  {id:52,s:"Vinyasa Flow — Surya Namaskar A & B",p:"🌱 Phase 1",pk:"p1",t:"Pratique",d:60},
+  {id:53,s:"Philosophie — 8 membres de Patanjali",p:"🌱 Phase 1",pk:"p1",t:"Philosophie",d:60},
+  {id:54,s:"Yin Yoga — Corps entier (Boho Beautiful)",p:"🌱 Phase 1",pk:"p1",t:"Yin",d:60},
+  {id:55,s:"Session longue — Pranayama + Pratique + Anatomie + Nidra",p:"🌱 Phase 1",pk:"p1",t:"Samedi",d:150},
+  {id:56,s:"Méditation + Yoga Sutras",p:"🌱 Phase 1",pk:"p1",t:"Repos",d:30},
+  {id:57,s:"Vinyasa fort — force & inversions légères",p:"🔥 Phase 2",pk:"p2",t:"Pratique",d:60},
+  {id:58,s:"Anatomie — Core, torsions & contre-indications",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:59,s:"Pranayama avancé — Bhramari + Bhastrika",p:"🔥 Phase 2",pk:"p2",t:"Pranayama",d:60},
+  {id:60,s:"Chakras & corps subtil",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:61,s:"Yin Yoga — chakras & méridiens",p:"🔥 Phase 2",pk:"p2",t:"Yin",d:60},
+  {id:62,s:"Session longue — Pranayama + Ashtanga + Anatomie + Nidra",p:"🔥 Phase 2",pk:"p2",t:"Samedi",d:165},
+  {id:63,s:"Méditation + Light on Yoga",p:"🔥 Phase 2",pk:"p2",t:"Repos",d:30},
+  {id:64,s:"Vinyasa fort — force & inversions légères",p:"🔥 Phase 2",pk:"p2",t:"Pratique",d:60},
+  {id:65,s:"Anatomie — Core, torsions & contre-indications",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:66,s:"Pranayama avancé — Bhramari + Bhastrika",p:"🔥 Phase 2",pk:"p2",t:"Pranayama",d:60},
+  {id:67,s:"Chakras & corps subtil",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:68,s:"Yin Yoga — chakras & méridiens",p:"🔥 Phase 2",pk:"p2",t:"Yin",d:60},
+  {id:69,s:"Session longue — Pranayama + Ashtanga + Anatomie + Nidra",p:"🔥 Phase 2",pk:"p2",t:"Samedi",d:165},
+  {id:70,s:"Méditation + Light on Yoga",p:"🔥 Phase 2",pk:"p2",t:"Repos",d:30},
+  {id:71,s:"Vinyasa fort — force & inversions légères",p:"🔥 Phase 2",pk:"p2",t:"Pratique",d:60},
+  {id:72,s:"Anatomie — Core, torsions & contre-indications",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:73,s:"Pranayama avancé — Bhramari + Bhastrika",p:"🔥 Phase 2",pk:"p2",t:"Pranayama",d:60},
+  {id:74,s:"Chakras & corps subtil",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:75,s:"Yin Yoga — chakras & méridiens",p:"🔥 Phase 2",pk:"p2",t:"Yin",d:60},
+  {id:76,s:"Session longue — Pranayama + Ashtanga + Anatomie + Nidra",p:"🔥 Phase 2",pk:"p2",t:"Samedi",d:165},
+  {id:77,s:"Méditation + Light on Yoga",p:"🔥 Phase 2",pk:"p2",t:"Repos",d:30},
+  {id:78,s:"Vinyasa fort — force & inversions légères",p:"🔥 Phase 2",pk:"p2",t:"Pratique",d:60},
+  {id:79,s:"Anatomie — Core, torsions & contre-indications",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:80,s:"Pranayama avancé — Bhramari + Bhastrika",p:"🔥 Phase 2",pk:"p2",t:"Pranayama",d:60},
+  {id:81,s:"Chakras & corps subtil",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:82,s:"Yin Yoga — chakras & méridiens",p:"🔥 Phase 2",pk:"p2",t:"Yin",d:60},
+  {id:83,s:"Session longue — Pranayama + Ashtanga + Anatomie + Nidra",p:"🔥 Phase 2",pk:"p2",t:"Samedi",d:165},
+  {id:84,s:"Méditation + Light on Yoga",p:"🔥 Phase 2",pk:"p2",t:"Repos",d:30},
+  {id:85,s:"Vinyasa fort — force & inversions légères",p:"🔥 Phase 2",pk:"p2",t:"Pratique",d:60},
+  {id:86,s:"Anatomie — Core, torsions & contre-indications",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:87,s:"Pranayama avancé — Bhramari + Bhastrika",p:"🔥 Phase 2",pk:"p2",t:"Pranayama",d:60},
+  {id:88,s:"Chakras & corps subtil",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:89,s:"Yin Yoga — chakras & méridiens",p:"🔥 Phase 2",pk:"p2",t:"Yin",d:60},
+  {id:90,s:"Session longue — Pranayama + Ashtanga + Anatomie + Nidra",p:"🔥 Phase 2",pk:"p2",t:"Samedi",d:165},
+  {id:91,s:"Méditation + Light on Yoga",p:"🔥 Phase 2",pk:"p2",t:"Repos",d:30},
+  {id:92,s:"Vinyasa fort — force & inversions légères",p:"🔥 Phase 2",pk:"p2",t:"Pratique",d:60},
+  {id:93,s:"Anatomie — Core, torsions & contre-indications",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:94,s:"Pranayama avancé — Bhramari + Bhastrika",p:"🔥 Phase 2",pk:"p2",t:"Pranayama",d:60},
+  {id:95,s:"Chakras & corps subtil",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:96,s:"Yin Yoga — chakras & méridiens",p:"🔥 Phase 2",pk:"p2",t:"Yin",d:60},
+  {id:97,s:"Session longue — Pranayama + Ashtanga + Anatomie + Nidra",p:"🔥 Phase 2",pk:"p2",t:"Samedi",d:165},
+  {id:98,s:"Méditation + Light on Yoga",p:"🔥 Phase 2",pk:"p2",t:"Repos",d:30},
+  {id:99,s:"Vinyasa fort — force & inversions légères",p:"🔥 Phase 2",pk:"p2",t:"Pratique",d:60},
+  {id:100,s:"Anatomie — Core, torsions & contre-indications",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:101,s:"Pranayama avancé — Bhramari + Bhastrika",p:"🔥 Phase 2",pk:"p2",t:"Pranayama",d:60},
+  {id:102,s:"Chakras & corps subtil",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:103,s:"Yin Yoga — chakras & méridiens",p:"🔥 Phase 2",pk:"p2",t:"Yin",d:60},
+  {id:104,s:"Session longue — Pranayama + Ashtanga + Anatomie + Nidra",p:"🔥 Phase 2",pk:"p2",t:"Samedi",d:165},
+  {id:105,s:"Méditation + Light on Yoga",p:"🔥 Phase 2",pk:"p2",t:"Repos",d:30},
+  {id:106,s:"Vinyasa fort — force & inversions légères",p:"🔥 Phase 2",pk:"p2",t:"Pratique",d:60},
+  {id:107,s:"Anatomie — Core, torsions & contre-indications",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:108,s:"Pranayama avancé — Bhramari + Bhastrika",p:"🔥 Phase 2",pk:"p2",t:"Pranayama",d:60},
+  {id:109,s:"Chakras & corps subtil",p:"🔥 Phase 2",pk:"p2",t:"Philosophie",d:60},
+  {id:110,s:"Yin Yoga — chakras & méridiens",p:"🔥 Phase 2",pk:"p2",t:"Yin",d:60},
+  {id:111,s:"Session longue — Pranayama + Ashtanga + Anatomie + Nidra",p:"🔥 Phase 2",pk:"p2",t:"Samedi",d:165},
+  {id:112,s:"Méditation + Light on Yoga",p:"🔥 Phase 2",pk:"p2",t:"Repos",d:30},
+  {id:113,s:"Self-practice autonome",p:"🌿 Phase 3",pk:"p3",t:"Pratique",d:60},
+  {id:114,s:"Ayurveda — Vata, Pitta, Kapha",p:"🌿 Phase 3",pk:"p3",t:"Philosophie",d:60},
+  {id:115,s:"Pranayama autonome + postures restauratives",p:"🌿 Phase 3",pk:"p3",t:"Pranayama",d:60},
+  {id:116,s:"Bhagavad Gita — 4 chemins du yoga",p:"🌿 Phase 3",pk:"p3",t:"Philosophie",d:60},
+  {id:117,s:"Yin Yoga profond restauratif",p:"🌿 Phase 3",pk:"p3",t:"Yin",d:60},
+  {id:118,s:"Session intégration — Pranayama + Self-practice + Avancé + Nidra",p:"🌿 Phase 3",pk:"p3",t:"Samedi",d:180},
+  {id:119,s:"Méditation longue + bilan",p:"🌿 Phase 3",pk:"p3",t:"Repos",d:45},
+  {id:120,s:"Self-practice autonome",p:"🌿 Phase 3",pk:"p3",t:"Pratique",d:60},
+  {id:121,s:"Ayurveda — Vata, Pitta, Kapha",p:"🌿 Phase 3",pk:"p3",t:"Philosophie",d:60},
+  {id:122,s:"Pranayama autonome + postures restauratives",p:"🌿 Phase 3",pk:"p3",t:"Pranayama",d:60},
+  {id:123,s:"Bhagavad Gita — 4 chemins du yoga",p:"🌿 Phase 3",pk:"p3",t:"Philosophie",d:60},
+  {id:124,s:"Yin Yoga profond restauratif",p:"🌿 Phase 3",pk:"p3",t:"Yin",d:60},
+  {id:125,s:"Session intégration — Pranayama + Self-practice + Avancé + Nidra",p:"🌿 Phase 3",pk:"p3",t:"Samedi",d:180},
+  {id:126,s:"Méditation longue + bilan",p:"🌿 Phase 3",pk:"p3",t:"Repos",d:45},
+  {id:127,s:"Self-practice autonome",p:"🌿 Phase 3",pk:"p3",t:"Pratique",d:60},
+  {id:128,s:"Ayurveda — Vata, Pitta, Kapha",p:"🌿 Phase 3",pk:"p3",t:"Philosophie",d:60},
+  {id:129,s:"Pranayama autonome + postures restauratives",p:"🌿 Phase 3",pk:"p3",t:"Pranayama",d:60},
+  {id:130,s:"Bhagavad Gita — 4 chemins du yoga",p:"🌿 Phase 3",pk:"p3",t:"Philosophie",d:60},
+  {id:131,s:"Yin Yoga profond restauratif",p:"🌿 Phase 3",pk:"p3",t:"Yin",d:60},
+  {id:132,s:"Session intégration — Pranayama + Self-practice + Avancé + Nidra",p:"🌿 Phase 3",pk:"p3",t:"Samedi",d:180},
+  {id:133,s:"Méditation longue + bilan",p:"🌿 Phase 3",pk:"p3",t:"Repos",d:45},
+  {id:134,s:"Self-practice autonome",p:"🌿 Phase 3",pk:"p3",t:"Pratique",d:60},
+  {id:135,s:"Ayurveda — Vata, Pitta, Kapha",p:"🌿 Phase 3",pk:"p3",t:"Philosophie",d:60},
+  {id:136,s:"Pranayama autonome + postures restauratives",p:"🌿 Phase 3",pk:"p3",t:"Pranayama",d:60},
+  {id:137,s:"Bhagavad Gita — 4 chemins du yoga",p:"🌿 Phase 3",pk:"p3",t:"Philosophie",d:60},
+  {id:138,s:"Yin Yoga profond restauratif",p:"🌿 Phase 3",pk:"p3",t:"Yin",d:60},
+  {id:139,s:"Session intégration — Pranayama + Self-practice + Avancé + Nidra",p:"🌿 Phase 3",pk:"p3",t:"Samedi",d:180},
+  {id:140,s:"Méditation longue + bilan",p:"🌿 Phase 3",pk:"p3",t:"Repos",d:45},
+  {id:141,s:"Self-practice autonome",p:"🌿 Phase 3",pk:"p3",t:"Pratique",d:60},
+  {id:142,s:"Ayurveda — Vata, Pitta, Kapha",p:"🌿 Phase 3",pk:"p3",t:"Philosophie",d:60},
+  {id:143,s:"Pranayama autonome + postures restauratives",p:"🌿 Phase 3",pk:"p3",t:"Pranayama",d:60},
+  {id:144,s:"Bhagavad Gita — 4 chemins du yoga",p:"🌿 Phase 3",pk:"p3",t:"Philosophie",d:60},
+  {id:145,s:"Yin Yoga profond restauratif",p:"🌿 Phase 3",pk:"p3",t:"Yin",d:60},
+  {id:146,s:"Session intégration — Pranayama + Self-practice + Avancé + Nidra",p:"🌿 Phase 3",pk:"p3",t:"Samedi",d:180},
+  {id:147,s:"Méditation longue + bilan",p:"🌿 Phase 3",pk:"p3",t:"Repos",d:45},
+];
+
+const PC={"🌱 Phase 1":"#C4875A","🔥 Phase 2":"#D4856A","🌿 Phase 3":"#7FA882"};
+const TC={Pratique:"#C4875A",Pranayama:"#B8A0D4",Philosophie:"#8B9ED4",Yin:"#85BECC",Samedi:"#7FA882",Repos:"#C4A882"};
+const SK="yoga_v1";
+let state={};
+try{state=JSON.parse(localStorage.getItem(SK))||{};}catch(e){}
+let filter="all";
+
+function save(){try{localStorage.setItem(SK,JSON.stringify(state));}catch(e){}}
+function toggle(id){state[id]=!state[id];save();update();}
+function resetAll(){if(confirm("Réinitialiser toutes les sessions cochées ?")){{state={};save();update();}}}
+
+function setFilter(f){
+  filter=f;
+  document.querySelectorAll(".fbtn").forEach(b=>b.classList.remove("active"));
+  const el=document.getElementById("f-"+f);
+  if(el)el.classList.add("active");
+  renderList();
+}
+
+function update(){
+  const done=SESSIONS.filter(s=>state[s.id]);
+  const totalMin=done.reduce((a,s)=>a+s.d,0);
+  const totalH=(totalMin/60).toFixed(1);
+  document.getElementById("totalHours").textContent=totalH+"h";
+
+  const pct=Math.round(done.length/SESSIONS.length*100);
+  const rem=Math.max(0,180-totalMin/60).toFixed(1);
+  document.getElementById("kpiRow").innerHTML=[
+    {v:totalH+"h",l:"Heures réalisées",s:"objectif 180h"},
+    {v:done.length,l:"Sessions faites",s:"sur "+SESSIONS.length},
+    {v:pct+"%",l:"Avancement global",s:(SESSIONS.length-done.length)+" restantes"},
+    {v:rem+"h",l:"Restant",s:"pour atteindre 180h"},
+  ].map(k=>`<div class="kpi"><div class="kv">${k.v}</div><div class="kl">${k.l}</div><div class="ks">${k.s}</div></div>`).join("");
+
+  const phases=["🌱 Phase 1","🔥 Phase 2","🌿 Phase 3"];
+  const pnames=["Fondations","Approfondissement","Intégration"];
+  const pmonths=["Mois 1–2","Mois 3–4","Mois 5–6"];
+  document.getElementById("ringsRow").innerHTML=phases.map((p,i)=>{
+    const tot=SESSIONS.filter(s=>s.p===p);
+    const dn=tot.filter(s=>state[s.id]);
+    const pp=tot.length?Math.round(dn.length/tot.length*100):0;
+    const col=PC[p];
+    const R=44,cx=55,cy=55,circ=2*Math.PI*R,dash=circ*pp/100;
+    const pH=(dn.reduce((a,s)=>a+s.d,0)/60).toFixed(1);
+    return`<div class="ring-item">
+      <div class="ring-wrap">
+        <svg width="110" height="110" viewBox="0 0 110 110">
+          <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#EDE4DC" stroke-width="8"/>
+          <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${col}" stroke-width="8"
+            stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" stroke-linecap="round"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-pct" style="color:${col}">${pp}%</div>
+          <div class="ring-done" style="color:#A8998C;">${dn.length}/${tot.length}</div>
+        </div>
+      </div>
+      <div class="ring-name" style="color:${col}">${pnames[i]}</div>
+      <div class="ring-hours">${pmonths[i]} · ${pH}h</div>
+    </div>`;
+  }).join("");
+
+  const types=["Pratique","Pranayama","Philosophie","Yin","Samedi","Repos"];
+  const maxT=Math.max(...types.map(t=>SESSIONS.filter(s=>s.t===t&&state[s.id]).reduce((a,s)=>a+s.d,0)),1);
+  document.getElementById("typeBars").innerHTML=types.map(t=>{
+    const dm=SESSIONS.filter(s=>s.t===t&&state[s.id]).reduce((a,s)=>a+s.d,0);
+    const tm=SESSIONS.filter(s=>s.t===t).reduce((a,s)=>a+s.d,0);
+    const w=Math.round(dm/maxT*100);
+    return`<div class="bar-row">
+      <div class="bar-meta"><span class="bar-label">${t}</span><span class="bar-val">${(dm/60).toFixed(1)}h / ${(tm/60).toFixed(0)}h</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${TC[t]||'#5A5248'}"></div></div>
+    </div>`;
+  }).join("");
+
+  const maxP=Math.max(...phases.map(p=>SESSIONS.filter(s=>s.p===p&&state[s.id]).reduce((a,s)=>a+s.d,0)),1);
+  document.getElementById("phaseBars").innerHTML=phases.map(p=>{
+    const dm=SESSIONS.filter(s=>s.p===p&&state[s.id]).reduce((a,s)=>a+s.d,0);
+    const tm=SESSIONS.filter(s=>s.p===p).reduce((a,s)=>a+s.d,0);
+    const w=Math.round(dm/maxP*100);
+    return`<div class="bar-row">
+      <div class="bar-meta"><span class="bar-label">${p}</span><span class="bar-val">${(dm/60).toFixed(1)}h / ${(tm/60).toFixed(0)}h</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${PC[p]}"></div></div>
+    </div>`;
+  }).join("");
+
+  renderList();
+}
+
+function renderList(){
+  const filtered=filter==="all"?SESSIONS:SESSIONS.filter(s=>s.pk===filter||s.t===filter);
+  document.getElementById("sessionList").innerHTML=filtered.map(s=>{
+    const dn=!!state[s.id];
+    return`<div class="srow${dn?" done":""}" onclick="toggle(${s.id})">
+      <div class="sid">#${s.id}</div>
+      <div>
+        <div class="sname">${s.s}</div>
+        <div class="smeta">${s.p} · ${s.t} · ${s.d} min</div>
+      </div>
+      <div class="scheck">${dn?'<i class="ti ti-check" style="font-size:11px;color:#7FA882;"></i>':""}</div>
+    </div>`;
+  }).join("");
+}
+
+update();
+</script>
+</body>
+</html>
